@@ -2,18 +2,19 @@
 import java.util.Scanner;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The Process Simulation program is a simulation of the execution of processes in an operating system.
  */
 
 /**
- *
+ * main class
+ * @version 1.0
  * @author JEREMY
+ * @since 2021-03-27
  */
 public class main {
 
     /**
+     * main method
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -78,13 +79,6 @@ public class main {
                     System.out.println("INVALID OPTION");
                 break;                        
             }
-        }
-        
-
-        
-        
-        
-    }
-    
-    
+        }                            
+    }        
 }
