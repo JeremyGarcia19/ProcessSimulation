@@ -1,3 +1,7 @@
+package Process;
+
+import java.util.ArrayList;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,7 +21,7 @@ public class Process {
     private int numInstE;
     private int memory;
     private String status;
-    private int memoryLocation;
+    private ArrayList<Integer> memoryLocation;
 
     /**
      * Constructor Method
@@ -25,14 +29,12 @@ public class Process {
      * @param pid   Process id
      * @param numInstT Number of process instructions
      * @param memory Memory allocated to the process
-     * @param memoryLocation Last memory location of the process
      */
-    public Process(String name, int pid, int numInstT, int memory, int memoryLocation){
+    public Process(String name, int pid, int numInstT, int memory){
         this.name = name;  
         this.pid = pid;
         this.numInstT = numInstT;
         this.memory = memory;
-        this.memoryLocation = memoryLocation;        
     }
 
     /**
@@ -87,7 +89,7 @@ public class Process {
      * Method to assign the last memory location
      * @param memoryLocation Last memory location of the process
      */
-    public void setMemoryLocation(int memoryLocation){
+    public void setMemoryLocation(ArrayList<Integer> memoryLocation){
         this.memoryLocation = memoryLocation;
     }
     
@@ -143,7 +145,7 @@ public class Process {
      * Method to get the last memory location
      * @return memoryLocation Last memory location of the process
      */
-    public int getMemoryLocation(){
+    public ArrayList<Integer> getMemoryLocation(){
         return this.memoryLocation;
     }   
     
@@ -153,7 +155,7 @@ public class Process {
      */
     @Override
     public String toString(){
-        return "Name: " + this.name + "\nPID: " + this.pid + "\nTotal Instructions: " + this.numInstT + "\nInstructions Executed:" + this.numInstE + "\nAllocated Memory: " + this.memoryLocation + "-" + (this.memoryLocation+this.memory);
+        return "Name: " + this.name + "\nPID: " + this.pid + "\nTotal Instructions: " + this.numInstT + "\nInstructions Executed:" + this.numInstE + "\nAllocated Memory: " + this.memoryLocation.toString();
     }   
 }
 

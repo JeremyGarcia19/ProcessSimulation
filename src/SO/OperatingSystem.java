@@ -1,4 +1,7 @@
+package SO;
 
+import Process.Process;
+import Process.QueueProcess;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,7 +21,8 @@ import java.util.Random;
  */
 public class OperatingSystem {
     private int id;
-    private int generalTable;
+    private static final int maxMem = 256;
+    private int[] globalMemTable;
     private QueueProcess queue;
     private ArrayList<Process> completed;
     private ArrayList<Process> deleted;
@@ -28,12 +32,14 @@ public class OperatingSystem {
      * Constructor method of the class.
      */
     private OperatingSystem(){
-        this.generalTable = 256;
+        this.globalMemTable = InitializeMemTable();
         this.id = 0;
         this.queue = QueueProcess.getQueue();
         this.completed = new ArrayList<>();
         this.deleted = new ArrayList<>();
     }
+    
+    
     
     /**
      * Method to get an instance of the OperatingSystem object.
@@ -57,11 +63,14 @@ public class OperatingSystem {
      * @param name Process name.
      */
     public void CreateProcess(String name){
+        ArrayList<Integer> memLocations;
         int memory = Memory();        
-        if(this.generalTable-memory >= 0){          
-            this.generalTable = this.generalTable-memory;
-            Process process = new Process(name, Sequence(), NumInstructions(), memory, this.generalTable);
+        if(this.EnoughMem(memory)){          
+            Process process = new Process(name, Sequence(), NumInstructions(), memory);
             this.queue.AddProcess(process);
+            memLocations = this.UpdateMemTable(process,1);
+            //this.showMem();
+            process.setMemoryLocation(memLocations);
             PrintQueue();
         }
         else{
@@ -75,16 +84,16 @@ public class OperatingSystem {
     public void SystemStatus(){
         System.out.println("Ready Processes: " + this.queue.NumProcess());
         System.out.println("Processes Complete: ");
-        showProcessList(this.completed);
+        ShowProcessList(this.completed);
         System.out.println("Processes Killed");
-        showProcessList(this.deleted);
+        ShowProcessList(this.deleted);
     }
     
     /**
      * Method that shows the information of the processes and how it is displayed.
      */
     public void PrintQueue(){
-        System.out.println("Available Memory:" + this.generalTable);
+        System.out.println("Available Memory:" + this.AvailableMemory());
         this.queue.ViewQueue();
         this.queue.graphicQueue();
     }
@@ -98,7 +107,7 @@ public class OperatingSystem {
         aux = this.queue.Execute();
         if(aux != null){
             this.completed.add(aux);
-            this.generalTable += aux.getMemory();
+            this.UpdateMemTable(aux,2);
         }
         this.queue.graphicQueue();
     }
@@ -133,7 +142,7 @@ public class OperatingSystem {
         aux = this.queue.Kill();
         if(aux != null){
             this.deleted.add(aux);
-            this.generalTable += aux.getMemory();
+            this.UpdateMemTable(aux,2);
         }
         this.queue.graphicQueue();
     }
@@ -146,7 +155,7 @@ public class OperatingSystem {
         if(!this.queue.IsEmpty()){
             ArrayList<Process> aux = this.queue.KillAll();
             System.out.println("Processes Killed");
-            this.showProcessList(aux);
+            this.ShowProcessList(aux);
         }else{
             System.out.println("The process queue is empty");
         }
@@ -185,9 +194,101 @@ public class OperatingSystem {
      * Method that displays the process names in an array list.
      * @param list Process array list.
      */
-    public void showProcessList(ArrayList<Process> list){
+    public void ShowProcessList(ArrayList<Process> list){
         for (Process p : list){
             System.out.println(p.getName());
         }   
-    }    
+    } 
+    
+    /**
+     * Method to initialize global memory table
+     * @return mmory (array initialized to 0)
+     */
+    public static int[] InitializeMemTable(){
+        int[] memory = new int[maxMem];
+        for (int i = 0; i < maxMem; i++){
+            memory[i] = 0;
+        }
+        return memory;
+    }
+    
+    /**
+     * Method that updates the memory table
+     * @param process Process created or removed.
+     * @param methodOp Method option.
+     * @return  memLocations (ArrayList with process memory locations)
+     */
+    public ArrayList<Integer> UpdateMemTable(Process process, int methodOp){
+        int memP = process.getMemory();
+        int Pid = process.getPid();
+        ArrayList<Integer> memLocations = new ArrayList<>();
+        int i=0,j=1;
+        while (i < maxMem && j <= memP){
+            //Case which a process is created
+            if (methodOp == 1 && Pid != this.globalMemTable[i] && this.globalMemTable[i] == 0){
+                this.globalMemTable[i] = Pid;               
+                memLocations.add(i); //Memory location.
+                j++;
+            }
+            //Case which a process is killed
+            if (methodOp == 2 && Pid == this.globalMemTable[i]){
+                this.globalMemTable[i] = 0;
+            }
+            i++;
+        }
+        if (!memLocations.isEmpty()){
+            return memLocations;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Method to know if the memory is full
+     * @return boolean
+     */
+    public boolean isFull(){
+        for (int i=0; i<maxMem; i++){
+            if(this.globalMemTable[i] == 0){
+                return false;
+            }           
+        }
+        return true;
+    }
+    
+    /**
+     * Method to know if there is enough memory for a process
+     * @param memP Process memory
+     * @return boolean
+     */
+    public boolean EnoughMem(int memP){
+        int cont = 0;
+        for(int i = 0; i < maxMem; i++){
+            if (this.globalMemTable[i] == 0){
+                cont ++;
+            }
+        }
+        return cont >= memP;
+    }
+    
+    /**
+     * Method to get available memory.
+     * @return avMem (available memory)
+     */
+    public int AvailableMemory(){
+        int avMem = 0;
+        for (int i = 0; i < maxMem; i++){
+            if (this.globalMemTable[i] == 0){
+                avMem ++;
+            }
+        }
+        return avMem;
+    }
+    
+    public void showMem(){
+        for(int i = 0; i < maxMem; i++){
+            System.out.println(this.globalMemTable[i]);
+        }
+    }
+    
 }
