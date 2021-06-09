@@ -20,7 +20,6 @@ public class Process {
     private int numInstT;
     private int numInstE;
     private int memory;
-    private String status;
     private ArrayList<Integer> memoryLocation;
 
     /**
@@ -76,14 +75,7 @@ public class Process {
     public void setMemory(int memory){
         this.memory = memory;
     }
-    
-    /**
-     * Methodo to assign the status of the process
-     * @param status Process status
-     */
-    public void setStatus(String status){
-        this.status = status;
-    }
+   
 
     /**
      * Method to assign the last memory location
@@ -133,14 +125,6 @@ public class Process {
         return this.memory;
     }    
     
-    /**
-     * Method to get the status of the process
-     * @return status (Process status)
-     */
-    public String getStatus(){
-        return this.status;
-    }    
-
     /**
      * Method to get the last memory location
      * @return memoryLocation Last memory location of the process
