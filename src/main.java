@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @author JEREMY
  * @since 2021-03-27
  */
-public class main {
+public class Main {
 
     /**
      * main method
