@@ -69,6 +69,8 @@ public class Main {
 
                 case 8:
                    OS.KillAllProcess();
+                   opc = 9;
+                   System.out.println("Leave");
                 break;
                 
                 case 9:

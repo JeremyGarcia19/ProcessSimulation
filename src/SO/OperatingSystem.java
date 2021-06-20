@@ -21,7 +21,7 @@ import java.util.Random;
  */
 public class OperatingSystem {
     private int id;
-    private static final int maxMem = 256;
+    private static final int maxMem = 2048;
     private int[] globalMemTable;
     private QueueProcess queue;
     private ArrayList<Process> completed;
@@ -225,7 +225,7 @@ public class OperatingSystem {
         int i=0,j=1;
         while (i < maxMem && j <= memP){
             //Case which a process is created
-            if (methodOp == 1 && Pid != this.globalMemTable[i] && this.globalMemTable[i] == 0){
+            if (methodOp == 1 && this.globalMemTable[i] == 0){
                 this.globalMemTable[i] = Pid;               
                 memLocations.add(i); //Memory location.
                 j++;
